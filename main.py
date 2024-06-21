@@ -17,8 +17,6 @@ def main() -> None:
         if project_data:
             scraped_projects_data.append(project_data.model_dump())
 
-    logger.info(scraped_projects_data)
-    
     df = pd.DataFrame(scraped_projects_data)
     
     print(df.shape)

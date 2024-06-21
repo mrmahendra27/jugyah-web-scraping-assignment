@@ -64,10 +64,18 @@ def get_project_data(site_url: str, link: str) -> ProjectData | None:
                     description = desc.get_text()
 
             # Get Amenities
-            amenities = list(propertyDetails["clubhouse"]["amenities_hash"].keys())
+            amenities = (
+                list(propertyDetails["clubhouse"]["amenities_hash"].keys())
+                if "clubhouse" in propertyDetails
+                else []
+            )
 
             # Get Locality Guide
-            locality_info = propertyDetails["details"]["localityInfo"]
+            locality_info = (
+                propertyDetails["details"]["localityInfo"]
+                if "localityInfo" in propertyDetails["details"]
+                else None
+            )
 
             # Get Map Location
             map_location = {"latitude": "", "longitude": ""}
@@ -104,6 +112,6 @@ def get_project_data(site_url: str, link: str) -> ProjectData | None:
         else:
             logger.error(f"{response.status_code}, Project page not working.")
     except Exception as e:
-        logger.error(f"Unexpected Error: {str(e)}")
+        logger.error(f"Unexpected Error: {project_url} {str(e)}")
 
     return None
