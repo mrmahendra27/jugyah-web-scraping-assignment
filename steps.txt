@@ -1,0 +1,20 @@
+# Creating Virtual Environment
+python -m venv env
+
+# Starting Virtual Environment
+    For Windows:
+        source env/Scripts/activate
+    For macOS/Linux: 
+        source env/bin/activate
+
+# Installing required modules
+pip install requests pandas beautifulsoup4 psutil
+
+# If script in folder navigate to the folder name
+cd Folder_Name
+
+# Run scraping script
+python main.py
+
+# deactivate the Virtual Environment
+deactivate
