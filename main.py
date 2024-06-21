@@ -8,8 +8,6 @@ from config import config
 def main() -> None:
     links: list = get_all_project_page_urls()
 
-    logger.info(len(links))
-
     scraped_projects_data = []
     site_url = config.SITE_URL
     for link in links:
@@ -19,7 +17,6 @@ def main() -> None:
 
     df = pd.DataFrame(scraped_projects_data)
     
-    print(df.shape)
     df.to_csv("project_data.csv", index=False)
 
 
