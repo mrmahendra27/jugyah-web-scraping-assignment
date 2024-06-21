@@ -4,9 +4,11 @@ import html
 from bs4 import BeautifulSoup
 from utils._request import send_request
 from utils.logger import logger
+from schemas.project_data import ProjectData
+import traceback
 
 
-def get_project_data(site_url: str, link: str) -> dict | None:
+def get_project_data(site_url: str, link: str) -> ProjectData | None:
     try:
         project_url = f"{site_url}{link}"
         response = send_request(project_url)
@@ -54,20 +56,22 @@ def get_project_data(site_url: str, link: str) -> dict | None:
             )
 
             # Get Description
-            about_project = soup.find("section", {"id": "aboutProject"})
-            description = (
-                about_project.find("div", {"data-q": "desc"}).text
-                if about_project
-                else ""
-            )
+            about_project = soup.find("section", id="aboutProject")
+            description = ""
+            if about_project:
+                desc = about_project.find("div", {"data-q": "desc"})
+                if desc:
+                    description = desc.get_text()
 
             # Get Amenities
             amenities = list(propertyDetails["clubhouse"]["amenities_hash"].keys())
 
             # Get Locality Guide
             locality_guide = {"description": "", "read_more": ""}
-            # locality_section = soup.find("section", id="locality")
-            # if locality_section:
+            locality_section = soup.find("section", class_="section-border")
+            logger.info(locality_section)
+            if locality_section:
+                logger.info(locality_section.find("div", {"data-q": "desc"}))
             #     if locality_section.find("div", {"data-q": "desc"}).find_all("span"):
             #         locality_guide["description"] = (
             #             locality_section.find("div", {"data-q": "desc"})
@@ -97,20 +101,25 @@ def get_project_data(site_url: str, link: str) -> dict | None:
                     }
                 )
 
-            return {
-                "title": property_title,
-                "project_url": project_url,
-                "bhk_units": bhk_units,
-                "property_cost_range": property_cost_range,
-                "launch_date": launch_date,
-                "description": description,
-                "amenities": amenities,
-                "locality_guide": locality_guide,
-                "map_location": map_location,
-                "seller_contacts": seller_contacts,
-            }
+            project_data = ProjectData(
+                title=property_title,
+                url=project_url,
+                bhk_units=bhk_units,
+                property_cost_range=property_cost_range,
+                launch_date=launch_date,
+                description=description,
+                amenities=amenities,
+                locality_guide=locality_guide,
+                map_location=map_location,
+                seller_contacts=seller_contacts,
+            )
+
+            return project_data
         else:
             logger.error(f"{response.status_code}, Project page not working.")
-            return None
     except Exception as e:
-        logger.error(e)
+        line_number = traceback.extract_stack()[-2][1]  # Get line number from the previous frame
+        print(f"Exception occurred on line {line_number}: {e}")
+        print(e)
+
+    return None

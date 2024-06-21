@@ -1,26 +1,20 @@
 import requests
 from config import config
+import random
 
 
-def create_session_with_pool():
-    session = requests.Session()
-
-    adapter = requests.adapters.HTTPAdapter(
-        pool_connections=config.POOL_CONNECTIONS, pool_maxsize=config.POOL_MAXSIZE
-    )
-    session.adapters["http://"] = adapter
-    session.adapters["https://"] = adapter
-
-    session.timeout = config.REQUEST_TIMEOUT
-    
-    if config.HEADERS:
-        session.headers.update(config.HEADERS)
-
-    
-    return session
+def get_random_user_agent():
+    return random.choice(config.USER_AGENTS)
 
 
 def send_request(url):
-    session = create_session_with_pool()
-    response = session.get(url)
+    headers = {
+        "User-Agent": get_random_user_agent(),
+        "Accept-Language": "en-US,en;q=0.7",
+    }
+    response = requests.get(url, timeout=config.REQUEST_TIMEOUT, headers=headers)
+    if response.status_code == 403:
+        print("403 Forbidden error, changing User-Agent and retrying...")
+        headers["User-Agent"] = get_random_user_agent()
+        response = requests.get(url, timeout=config.REQUEST_TIMEOUT, headers=headers)
     return response

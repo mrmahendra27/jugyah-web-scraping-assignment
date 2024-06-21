@@ -9,22 +9,20 @@ def main() -> None:
     links: list = get_all_project_page_urls()
 
     logger.info(len(links))
-    logger.info(links)
 
     scraped_projects_data = []
     site_url = config.SITE_URL
     for link in links:
         project_data = get_project_data(site_url, link)
         if project_data:
-            scraped_projects_data.append(project_data)
+            scraped_projects_data.append(project_data.model_dump())
 
-    logger.info(len(scraped_projects_data))
     logger.info(scraped_projects_data)
     
     df = pd.DataFrame(scraped_projects_data)
     
     print(df.shape)
-    df.to_csv("project_data.csv")
+    df.to_csv("project_data.csv", index=False)
 
 
 if __name__ == "__main__":
