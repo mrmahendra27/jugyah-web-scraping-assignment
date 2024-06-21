@@ -9,17 +9,20 @@ Clone the git repo in a directory and open the folder in a code editor and open 
 ### Start your virtual enviroment ###
 ```
 # on Window
-source .venv/Scripts/activate
+    source .venv/Scripts/activate
 # on macOS/Linux: 
-source env/bin/activate
+    source env/bin/activate
 
 ```
 
 ### Install the libraries required for scraping ###
 ```pip install -r 'requirements.txt```
 
-### If script in folder navigate to the folder name
+### If the script is in a folder then navigate to the folder name
 ```cd Folder_Name```
 
 ### Run the scraping script ###
 ```python main.py```
+
+### deactivate the Virtual Environment
+```deactivate```
