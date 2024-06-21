@@ -67,21 +67,7 @@ def get_project_data(site_url: str, link: str) -> ProjectData | None:
             amenities = list(propertyDetails["clubhouse"]["amenities_hash"].keys())
 
             # Get Locality Guide
-            locality_guide = {"description": "", "read_more": ""}
-            locality_section = soup.find("section", class_="section-border")
-            logger.info(locality_section)
-            if locality_section:
-                logger.info(locality_section.find("div", {"data-q": "desc"}))
-            #     if locality_section.find("div", {"data-q": "desc"}).find_all("span"):
-            #         locality_guide["description"] = (
-            #             locality_section.find("div", {"data-q": "desc"})
-            #             .find_all("span")[1]
-            #             .get_text()
-            #         )
-
-            #     read_more = locality_section.find("a")
-            #     if read_more:
-            #         locality_guide["read_more"] = read_more.get("href")
+            locality_info = propertyDetails["details"]["localityInfo"]
 
             # Get Map Location
             map_location = {"latitude": "", "longitude": ""}
@@ -109,7 +95,7 @@ def get_project_data(site_url: str, link: str) -> ProjectData | None:
                 launch_date=launch_date,
                 description=description,
                 amenities=amenities,
-                locality_guide=locality_guide,
+                locality_info=locality_info,
                 map_location=map_location,
                 seller_contacts=seller_contacts,
             )
@@ -118,8 +104,6 @@ def get_project_data(site_url: str, link: str) -> ProjectData | None:
         else:
             logger.error(f"{response.status_code}, Project page not working.")
     except Exception as e:
-        line_number = traceback.extract_stack()[-2][1]  # Get line number from the previous frame
-        print(f"Exception occurred on line {line_number}: {e}")
-        print(e)
+        logger.error(f"Unexpected Error: {str(e)}")
 
     return None

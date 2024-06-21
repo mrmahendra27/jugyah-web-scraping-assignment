@@ -8,6 +8,6 @@ class ProjectData(BaseModel):
     property_cost_range: list
     description: str
     map_location: dict
-    locality_guide: dict
+    locality_info: dict
     amenities: list
     seller_contacts: list
